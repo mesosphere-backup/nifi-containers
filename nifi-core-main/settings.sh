@@ -18,4 +18,4 @@ DOCKER_GID=1000; printmsg "Docker GID" ${DOCKER_GID}
 NIFI_TAG="apache/nifi:${NIFI_VERSION}"; printmsg "NiFi Tag" ${NIFI_TAG}
 printmsg "NiFi Version" ${NIFI_VERSION}
 MIRROR="https://archive.apache.org/dist"; printmsg "NiFi Mirror" ${MIRROR}
-MIRROR_BASE_URL="http://192.168.86.21:8000"; printmsg "NiFi Mirror" ${MIRROR_BASE_URL}
+MIRROR_BASE_URL="http://192.168.86.21:8000"; printmsg "NiFi Local Mirror" ${MIRROR_BASE_URL}
