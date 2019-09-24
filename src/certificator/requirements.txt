@@ -1,0 +1,10 @@
+pyinstaller
+pycrypto
+click
+requests
+pyjks
+datetime
+pyOpenSSL
+pyjwt
+staticx
+patchelf-wrapper

@@ -1,0 +1,202 @@
+{#
+    [nifi-single]
+    This definition file deploys a single-node nifi instance.
+    Valid options are:
+
+        [instsettings]
+            groupid           The name of the services group [required]
+            nodeid            The name of the new instance [required]
+            nodecpu           Amount of CPU to request [required]
+            nodemem           Amount of RAM to request [required]
+            image             Docker image to use [not required, defaults
+            to mesosnifi/nifi-base:1.9.2_6]
+            nififqdn          FQDN of this nifi node within DCOS
+            grouplabel        Group label to set for MarathonLB
+            vhostlabel        VHost label to set for MarathonLB
+
+        [disksettings]
+            contentreposize   Size of the contentrepo
+            flowfilereposize  Size of the flowfile repo
+            provenancesize    Size of the provenance repo
+            libsreposize      Size of the additional libraries repo
+            keysreposize      Size of the key/truststore repo
+
+        [envsettings]
+            set the environment variables to pass. Predominantly used to configure NiFi.
+            For this example, we are using the following prefixes:
+            NF_<nifi.properties key> - NiFi Properties file
+            NIFI_[NIFI_JVM_HEAP_INIT | NIFI_JVM_HEAP_MAX | NIFI_JVM_DEBUGGER] - NiFi bootstrap file
+            DCOS_MASTER - URL of the DCOS Master Server, including http://
+            DCOS_SERVICE_USER_NAME - username of the DCOS NiFi Service
+            DCOS_SERVICE_USER_KEY - private key of the NiFi service user
+            NF_KEYS_PATH - Path to store the key and trust store. Must correspond with the "keys" persistent volume.
+#}{
+  "id": "{{ thedefinition.instsettings.groupid }}",
+  "apps": [
+    {
+      "env": {
+        {% for k,v in thedefinition.envsettings.items() -%}
+        "{{ k }}": "{{ v }}",
+        {% endfor -%}
+        "NIFI_HOME": "/opt/nifi/nifi-current",
+        "NF_NIFI_WEB_HOST": "{{ thedefinition.instsettings.nififqdn }}",
+        "NF_NIFI_CONTENT_REPOSITORY_DIRECTORY_DEFAULT": "/mnt/mesos/sandbox/content",
+        "NF_NIFI_PROVENANCE_REPOSITORY_DIRECTORY_DEFAULT": "/mnt/mesos/sandbox/provenance",
+        "NF_NIFI_FLOWFILE_REPOSITORY_DIRECTORY": "/mnt/mesos/sandbox/flowfiles",
+        "NF_FLOWFILE_REPOSITORY_DIRECTORY": "/mnt/mesos/sandbox/libs"
+      },
+      "labels": {
+        "HAPROXY_0_GROUP": "{{ thedefinition.instsettings.grouplabel }}",
+        "HAPROXY_0_VHOST": "{{ thedefinition.instsettings.vhostlabel }}"
+      },
+      "id": "{{ thedefinition.instsettings.groupid }}/{{ thedefinition.instsettings.nodeid }}",
+      "cpus": {{ thedefinition.instsettings.nodecpu }},
+      "mem": {{ thedefinition.instsettings.nodemem }},
+      "backoffFactor": 1.15,
+      "backoffSeconds": 1,
+      "cmd": "../scripts/start.sh",
+      "container": {
+        "portMappings": [
+          {
+            "containerPort": 8080,
+            "servicePort": 8080,
+            "name": "uihttp"
+          },
+          {
+            "containerPort": 80,
+            "labels": {
+                "VIP{{ thedefinition.instsettings.nodeid|replace("/","_") }}443": "/nifiingresshttp:80"
+            },
+            "servicePort": 80,
+            "name": "ingresshttp"
+          },
+          {
+            "containerPort": 443,
+            "labels": {
+              "VIP{{ thedefinition.instsettings.nodeid|replace("/","_") }}443": "/nifiingresshttps:443"
+            },
+            "servicePort": 443,
+            "name": "ingresshttps"
+          },
+          {
+            "containerPort": 9443,
+            "servicePort": 9443,
+            "name": "uihttps"
+          },
+          {
+            "containerPort": 10443,
+            "servicePort": 10443,
+            "name": "socket"
+          }
+        ],
+        "type": "MESOS",
+        "volumes": [
+          {
+            "containerPath": "certs-priv-pem",
+            "secret": "certsprivpem"
+          },
+          {
+            "external": {
+              "name": "contentrepo{{ thedefinition.instsettings.nodeid|replace("/","") }}",
+              "provider": "dvdi",
+              "options": {
+                "dvdi/driver": "pxd",
+                "dvdi/repl": "3",
+                "dvd/shared": "false"
+              },
+              "size": {{ thedefinition.disksettings.contentreposize }}
+            },
+            "mode": "RW",
+            "containerPath": "/mnt/mesos/sandbox/content"
+          },
+          {
+            "external": {
+              "name": "ffrepo{{ thedefinition.instsettings.nodeid|replace("/","") }}",
+              "provider": "dvdi",
+              "options": {
+                "dvdi/driver": "pxd",
+                "dvdi/repl": "3",
+                "dvd/shared": "false"
+              },
+              "size": {{ thedefinition.disksettings.flowfilereposize }}
+            },
+            "mode": "RW",
+            "containerPath": "/mnt/mesos/sandbox/flowfiles"
+          },
+          {
+            "external":
+            {
+              "name": "provenance{{ thedefinition.instsettings.nodeid|replace("/","") }}",
+              "provider": "dvdi",
+              "options": {
+                "dvdi/driver": "pxd",
+                "dvdi/repl": "3",
+                "dvd/shared": "false"
+              },
+              "size": {{ thedefinition.disksettings.provenancesize }}
+            },
+            "mode": "RW",
+            "containerPath": "/mnt/mesos/sandbox/provenance"
+          },
+          {
+            "external": {
+              "name": "libs{{ thedefinition.instsettings.nodeid|replace("/","") }}",
+              "provider": "dvdi",
+              "options": {
+                "dvdi/driver": "pxd",
+                "dvdi/repl": "3",
+                "dvd/shared": "false"
+              },
+              "size": {{ thedefinition.disksettings.libsreposize }}
+            },
+            "mode": "RW",
+            "containerPath": "/mnt/mesos/sandbox/libs"
+          },
+          {
+            "external": {
+              "name": "keys{{ thedefinition.instsettings.nodeid|replace("/","") }}",
+              "provider": "dvdi",
+              "options": {
+                "dvdi/driver": "pxd",
+                "dvdi/repl": "3",
+                "dvd/shared": "false"
+              },
+            "size": {{ thedefinition.disksettings.keysreposize }}
+            },
+            "mode": "RW",
+            "containerPath": "/mnt/mesos/sandbox/keys"
+          }
+        ],
+        "docker": {
+          "image": "{{ thedefinition.instsettings.nificontainer|default("mesosnifi/nifi-base:1.9.2_7") }}",
+          "forcePullImage": true,
+          "parameters": []
+        }
+      },
+      "disk": 0,
+      "instances": 1,
+      "maxLaunchDelaySeconds": 3600,
+      "gpus": 0,
+      "networks": [
+        {
+          "name": "dcos",
+          "mode": "container"
+        }
+      ],
+      "requirePorts": false,
+      "killSelection": "YOUNGEST_FIRST",
+      "unreachableStrategy": {
+        "inactiveAfterSeconds": 0,
+        "expungeAfterSeconds": 0
+      },
+      "secrets": {
+        "certsprivpem": {
+          "source": "certs-priv-pem"
+        }
+      },
+      "healthChecks": [],
+      "fetch": [],
+      "constraints": []
+    }
+  ]
+}
