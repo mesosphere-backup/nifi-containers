@@ -24,10 +24,6 @@
     </userGroupProvider>
 
     {% if AUTHORIZERS_LDAP_UGP %}
-        {{ "" }}
-    {% else %}
-        {{ "<!--" }}
-    {% endif %}
     <userGroupProvider>
         <identifier>ldap-user-group-provider</identifier>
         <class>org.apache.nifi.ldap.tenants.LdapUserGroupProvider</class>
@@ -70,43 +66,23 @@
         <property name="Group Member Attribute">{{ AUTHORIZERS_LDAP_GRP_MEM_ATT | default("") }}</property>
         <property name="Group Member Attribute - Referenced User Attribute">{{ AUTHORIZERS_LDAP_GRP_MEM_ATT_REF | default("") }}</property>
     </userGroupProvider>
-    {% if AUTHORIZERS_LDAP_UGP %}
-        {{ "" }}
-    {% else %}
-        {{ "-->" }}
     {% endif %}
 
     {% if AUTHORIZERS_CUGP %}
-        {{ "" }}
-    {% else %}
-        {{ "<!--" }}
-    {% endif %}
     <userGroupProvider>
         <identifier>composite-user-group-provider</identifier>
         <class>org.apache.nifi.authorization.CompositeUserGroupProvider</class>
         <property name="User Group Provider 1">{{ AUTHORIZERS_UGP_CUGP_1 | default("") }}</property>
     </userGroupProvider>
-    {% if AUTHORIZERS_CUGP %}
-        {{ "" }}
-    {% else %}
-        {{ "-->" }}
     {% endif %}
 
     {% if AUTHORIZERS_CCUGP %}
-        {{ "" }}
-    {% else %}
-        {{ "<!--" }}
-    {% endif %}
     <userGroupProvider>
         <identifier>composite-configurable-user-group-provider</identifier>
         <class>org.apache.nifi.authorization.CompositeConfigurableUserGroupProvider</class>
         <property name="Configurable User Group Provider">{{ AUTHORIZERS_UGP_COMP_CUGP | default("file-user-group-provider") }}</property>
         <property name="User Group Provider 1">{{ AUTHORIZERS_COMP_UGP | default("") }}</property>
     </userGroupProvider>
-    {% if AUTHORIZERS_CCUGP %}
-        {{ "" }}
-    {% else %}
-        {{ "-->" }}
     {% endif %}
 
     <accessPolicyProvider>
