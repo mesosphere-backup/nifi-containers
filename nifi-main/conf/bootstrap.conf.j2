@@ -22,18 +22,18 @@ java=java
 run.as={{ BOOTSTRAP_RUN_AS }}
 
 # Configure where NiFi's lib and conf directories live
-lib.dir={{ BOOTSTRAP_LIB_DIR | default("./lib") }}
-conf.dir={{ BOOTSTRAP_CONF_DIR | default("./conf") }}
+lib.dir={{ BOOTSTRAP_LIB_DIR|default("./lib") }}
+conf.dir={{ BOOTSTRAP_CONF_DIR|default("./conf") }}
 
 # How long to wait after telling NiFi to shutdown before explicitly killing the Process
-graceful.shutdown.seconds={{ BOOTSTRAP_GRACEFUL_SHUTDOWN_SECONDS | default("20") }}
+graceful.shutdown.seconds={{ BOOTSTRAP_GRACEFUL_SHUTDOWN_SECONDS|default("20") }}
 
 # Disable JSR 199 so that we can use JSP's without running a JDK
 java.arg.1=-Dorg.apache.jasper.compiler.disablejsr199=true
 
 # JVM memory settings
-java.arg.2={{ BOOTSTRAP_XMS |default("-Xms512m") }}
-java.arg.3={{ BOOTSTRAP_XMX |default("-Xmx512m") }}
+java.arg.2={{ BOOTSTRAP_XMS|default("-Xms512m") }}
+java.arg.3={{ BOOTSTRAP_XMX|default("-Xmx512m") }}
 
 # Enable Remote Debugging
 #java.arg.debug=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
@@ -66,7 +66,7 @@ java.arg.16=-Djavax.security.auth.useSubjectCredsOnly=true
 ###
 
 # XML File that contains the definitions of the notification services
-notification.services.file={{ BOOTSTRAP_NOTIFICATION_SERVICES_FILE | default("./conf/bootstrap-notification-services.xml") }}
+notification.services.file={{ BOOTSTRAP_NOTIFICATION_SERVICES_FILE|default("./conf/bootstrap-notification-services.xml") }}
 
 # In the case that we are unable to send a notification for an event, how many times should we retry?
-notification.max.attempts={{ BOOTSTRAP_NOTIFICATION_MAX_ATTEMPTS | default("5") }}
+notification.max.attempts={{ BOOTSTRAP_NOTIFICATION_MAX_ATTEMPTS|default("5") }}

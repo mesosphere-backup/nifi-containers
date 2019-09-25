@@ -2,13 +2,13 @@
 
 NIFI_VERSION="1.9.2"
 FROMIMAGE_VERSION="-4"
-DOCKERTAG_VERSION="-6"
+DOCKERTAG_VERSION="-7"
 
 
 ## Base settings
 printhdr "Image Builder Settings:"
-FROMIMAGE="mesosnifi/nifi-core-main:${NIFI_VERSION}${FROMIMAGE_VERSION}"; printmsg "Docker FROM" "${FROMIMAGE}"
-DOCKERTAG="mesosnifi/nifi-main:${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Setting Tag"  "${DOCKERTAG}"
+FROMIMAGE="mesosphere/nifi:main-core-${NIFI_VERSION}${FROMIMAGE_VERSION}"; printmsg "Docker FROM" "${FROMIMAGE}"
+DOCKERTAG="mesosphere/nifi:main-${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Setting Tag"  "${DOCKERTAG}"
 IMAGE_VERSION="${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Version" "${IMAGE_VERSION}"
 ALWAYSPUSH="False"; printmsg "Always Push" "${ALWAYSPUSH}"
 

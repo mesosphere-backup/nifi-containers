@@ -7,8 +7,8 @@ DOCKERTAG_VERSION="-6"
 
 ## Base settings
 printhdr "Image Builder Settings:"
-FROMIMAGE="mesosnifi/nifi-core-pki:${NIFI_VERSION}${FROMIMAGE_VERSION}"; printmsg "Docker FROM" "${FROMIMAGE}"
-DOCKERTAG="mesosnifi/nifi-pki:${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Setting Tag"  "${DOCKERTAG}"
+FROMIMAGE="mesosphere/nifi:pki-core-${NIFI_VERSION}${FROMIMAGE_VERSION}"; printmsg "Docker FROM" "${FROMIMAGE}"
+DOCKERTAG="mesosphere/nifi:pki-${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Setting Tag"  "${DOCKERTAG}"
 IMAGE_VERSION="${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Version" "${IMAGE_VERSION}"
 ALWAYSPUSH="False"; printmsg "Always Push" "${ALWAYSPUSH}"
 

@@ -20,13 +20,13 @@
 #
 #
 
-clientPort={{ ZOOKEEPER_CLIENTPORT | default("2181") }}
-initLimit={{ ZOOKEEPER_INITLIMIT | default("10") }}
-autopurge.purgeInterval={{ ZOOKEEPER_AUTOPURGE_PURGEINTERVAL | default("24") }}
-syncLimit={{ ZOOKEEPER_SYNCLIMIT | default("5") }}
-tickTime={{ ZOOKEEPER_TICKTIME | default("2000") }}
-dataDir={{ ZOOKEEPER_DATADIR | default("./state/zookeeper") }}
-autopurge.snapRetainCount={{ ZOOKEEPER_AUTOPURGE_SNAPRETAINCOUNT | default("30") }}
+clientPort={{ ZOOKEEPER_CLIENTPORT|default("2181") }}
+initLimit={{ ZOOKEEPER_INITLIMIT|default("10") }}
+autopurge.purgeInterval={{ ZOOKEEPER_AUTOPURGE_PURGEINTERVAL|default("24") }}
+syncLimit={{ ZOOKEEPER_SYNCLIMIT|default("5") }}
+tickTime={{ ZOOKEEPER_TICKTIME|default("2000") }}
+dataDir={{ ZOOKEEPER_DATADIR|default("./state/zookeeper") }}
+autopurge.snapRetainCount={{ ZOOKEEPER_AUTOPURGE_SNAPRETAINCOUNT|default("30") }}
 
 #
 # Specifies the servers that are part of this zookeeper ensemble. For
@@ -42,6 +42,8 @@ autopurge.snapRetainCount={{ ZOOKEEPER_AUTOPURGE_SNAPRETAINCOUNT | default("30")
 # administration guide for more details.
 #
 
+# Example for container use: ZOOKEEPER_SERVER_1="server.1=nifi-node1-hostname:2888:3888"
+#
 {{ ZOOKEEPER_SERVER_1 }}
 {{ ZOOKEEPER_SERVER_2 }}
 {{ ZOOKEEPER_SERVER_3 }}

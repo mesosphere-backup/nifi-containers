@@ -6,9 +6,6 @@
 source functions.sh
 source settings.sh
 
-## Deal with Docker's idiotic build context restrictions.
-cp ../../tools/bin/setprops sh/setprops
-
 docker build \
 	--no-cache \
 	--progress plain \

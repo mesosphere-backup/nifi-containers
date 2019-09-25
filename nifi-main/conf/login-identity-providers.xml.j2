@@ -19,32 +19,32 @@
     <provider>
         <identifier>ldap-provider</identifier>
         <class>org.apache.nifi.ldap.LdapProvider</class>
-        <property name="Authentication Strategy">{{ LOGINIDPROV_LDAP_AUTH_STRAT | default("START_TLS") }}</property>
+        <property name="Authentication Strategy">{{ LOGINIDPROV_LDAP_AUTH_STRAT|default("START_TLS") }}</property>
 
-        <property name="Manager DN">{{ LOGINIDPROV_LDAP_MGR_DN | default("") }}</property>
-        <property name="Manager Password">{{ LOGINIDPROV_LDAP_MGR_PWD | default("") }}</property>
+        <property name="Manager DN">{{ LOGINIDPROV_LDAP_MGR_DN|default("") }}</property>
+        <property name="Manager Password">{{ LOGINIDPROV_LDAP_MGR_PWD|default("") }}</property>
 
-        <property name="TLS - Keystore">{{ LOGINIDPROV_LDAP_TLS_KS | default("") }}</property>
-        <property name="TLS - Keystore Password">{{ LOGINIDPROV_LDAP_TLS_KS_PWD | default("") }}</property>
-        <property name="TLS - Keystore Type">{{ LOGINIDPROV_LDAP_TLS_KS_TYPE | default("") }}</property>
-        <property name="TLS - Truststore">{{ LOGINIDPROV_LDAP_TLS_TS | default("") }}</property>
-        <property name="TLS - Truststore Password">{{ LOGINIDPROV_LDAP_TLS_TS_PWD | default("") }}</property>
-        <property name="TLS - Truststore Type">{{ LOGINIDPROV_LDAP_TLS_TS_TYPE | default("") }}</property>
-        <property name="TLS - Client Auth">{{ LOGINIDPROV_LDAP_TLS_CLIENT_AUTH | default("") }}</property>
-        <property name="TLS - Protocol">{{ LOGINIDPROV_LDAP_TLS_PROT | default("") }}</property>
-        <property name="TLS - Shutdown Gracefully">{{ LOGINIDPROV_LDAP_TLS_SHUT_GRACE | default("") }}</property>
+        <property name="TLS - Keystore">{{ LOGINIDPROV_LDAP_TLS_KS|default("") }}</property>
+        <property name="TLS - Keystore Password">{{ LOGINIDPROV_LDAP_TLS_KS_PWD|default("") }}</property>
+        <property name="TLS - Keystore Type">{{ LOGINIDPROV_LDAP_TLS_KS_TYPE|default("") }}</property>
+        <property name="TLS - Truststore">{{ LOGINIDPROV_LDAP_TLS_TS|default("") }}</property>
+        <property name="TLS - Truststore Password">{{ LOGINIDPROV_LDAP_TLS_TS_PWD|default("") }}</property>
+        <property name="TLS - Truststore Type">{{ LOGINIDPROV_LDAP_TLS_TS_TYPE|default("") }}</property>
+        <property name="TLS - Client Auth">{{ LOGINIDPROV_LDAP_TLS_CLIENT_AUTH|default("") }}</property>
+        <property name="TLS - Protocol">{{ LOGINIDPROV_LDAP_TLS_PROT|default("") }}</property>
+        <property name="TLS - Shutdown Gracefully">{{ LOGINIDPROV_LDAP_TLS_SHUT_GRACE|default("") }}</property>
 
-        <property name="Referral Strategy">{{ LOGINIDPROV_LDAP_REF_STRAT | default("FOLLOW") }}</property>
-        <property name="Connect Timeout">{{ LOGINIDPROV_LDAP_CONN_TO | default("10 secs") }}</property>
-        <property name="Read Timeout">{{ LOGINIDPROV_LDAP_READ_TO | default("10 secs") }}</property>
+        <property name="Referral Strategy">{{ LOGINIDPROV_LDAP_REF_STRAT|default("FOLLOW") }}</property>
+        <property name="Connect Timeout">{{ LOGINIDPROV_LDAP_CONN_TO|default("10 secs") }}</property>
+        <property name="Read Timeout">{{ LOGINIDPROV_LDAP_READ_TO|default("10 secs") }}</property>
 
-        <property name="Url">{{ LOGINIDPROV_LDAP_URL | default("") }}</property>
+        <property name="Url">{{ LOGINIDPROV_LDAP_URL|default("") }}</property>
 
-        <property name="User Search Base">{{ LOGINIDPROV_LDAP_USR_SEARCH_BASE | default("") }}</property>
-        <property name="User Search Filter">{{ LOGINIDPROV_LDAP_USR_SEARCH_FILT | default("") }}</property>
+        <property name="User Search Base">{{ LOGINIDPROV_LDAP_USR_SEARCH_BASE|default("") }}</property>
+        <property name="User Search Filter">{{ LOGINIDPROV_LDAP_USR_SEARCH_FILT|default("") }}</property>
 
-        <property name="Identity Strategy">{{ LOGINIDPROV_LDAP_ID_STRAT | default("USE_DN") }}</property>
-        <property name="Authentication Expiration">{{ LOGINIDPROV_LDAP_AUTH_EXPT | default("12 hours") }}</property>
+        <property name="Identity Strategy">{{ LOGINIDPROV_LDAP_ID_STRAT|default("USE_DN") }}</property>
+        <property name="Authentication Expiration">{{ LOGINIDPROV_LDAP_AUTH_EXPT|default("12 hours") }}</property>
     </provider>
     {%  endif %}
 
@@ -52,8 +52,8 @@
     <provider>
         <identifier>kerberos-provider</identifier>
         <class>org.apache.nifi.kerberos.KerberosProvider</class>
-        <property name="Default Realm">{{ LOGINIDPROV_KRB_DEF_REALM | default("NIFI.APACHE.ORG") }}</property>
-        <property name="Authentication Expiration">{{ LOGINIDPROV_KRB_AUTH_EXP | default("12 hours") }}</property>
+        <property name="Default Realm">{{ LOGINIDPROV_KRB_DEF_REALM|default("NIFI.APACHE.ORG") }}</property>
+        <property name="Authentication Expiration">{{ LOGINIDPROV_KRB_AUTH_EXP|default("12 hours") }}</property>
     </provider>
     {% endif %}
 </loginIdentityProviders>

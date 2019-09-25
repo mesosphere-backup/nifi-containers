@@ -7,7 +7,7 @@ source functions.sh
 source settings.sh
 
 ## Deal with Docker's idiotic build context restrictions.
-cp ../../tools/bin/setprops sh/setprops
+cp ../tools/bin/j2 sh/j2
 
 docker build \
 	--no-cache \
@@ -24,7 +24,7 @@ printhdr "Building Image "; progress "$!"
 
 printhdr "Image Built! "
 
-rm -f sh/setprops
+rm -f sh/j2
 
 if [[ $1 == "push" || ${ALWAYSPUSH} == "True" ]]; then
 	printhdr "Pushing Image ${DOCKERTAG} to Docker Hub"

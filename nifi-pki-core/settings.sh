@@ -7,7 +7,7 @@ DOCKERTAG_VERSION="-4"
 ## Base settings
 printhdr "Image Builder Settings:"
 FROMIMAGE="openjdk:${FROMIMAGE_VERSION}"; printmsg "Docker FROM" "${FROMIMAGE}"
-DOCKERTAG="mesosnifi/nifi-core-pki:${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Setting Tag"  "${DOCKERTAG}"
+DOCKERTAG="mesosphere/nifi:pki-core-${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Setting Tag"  "${DOCKERTAG}"
 IMAGE_VERSION="${NIFI_VERSION}${DOCKERTAG_VERSION}"; printmsg "Version" "${IMAGE_VERSION}"
 ALWAYSPUSH="False"; printmsg "Always Push" "${ALWAYSPUSH}"
 
@@ -18,4 +18,4 @@ DOCKER_GID=1000; printmsg "Docker GID" ${DOCKER_GID}
 NIFI_TAG="apache/nifi:${NIFI_VERSION}"; printmsg "NiFi Tag" ${NIFI_TAG}
 printmsg "NiFi Version" ${NIFI_VERSION}
 MIRROR="https://archive.apache.org/dist"; printmsg "NiFi Mirror" ${MIRROR}
-MIRROR_BASE_URL="http://192.168.86.21:8000"; printmsg "NiFi Mirror" ${MIRROR_BASE_URL}
+MIRROR_BASE_URL="http://192.168.86.200:8000"; printmsg "NiFi Mirror" ${MIRROR_BASE_URL}
