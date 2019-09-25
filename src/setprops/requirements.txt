@@ -1,0 +1,6 @@
+pyinstaller
+click
+jinja2
+datetime
+staticx
+patchelf-wrapper
