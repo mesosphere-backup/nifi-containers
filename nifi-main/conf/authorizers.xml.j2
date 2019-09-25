@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<authorizers>
+
+    <userGroupProvider>
+        <identifier>file-user-group-provider</identifier>
+        <class>org.apache.nifi.authorization.FileUserGroupProvider</class>
+        <property name="Users File">{{ AUTHORIZERS_UGP_UF | default("./conf/users.xml") }}</property>
+        <property name="Legacy Authorized Users File">{{ AUTHORIZERS_UGP_LEGACY_AUF | default("") }}</property>
+        <property name="Initial User Identity 1">{{ AUTHORIZERS_UGP_IUI1 | default("") }}</property>
+    </userGroupProvider>
+
+    {% if AUTHORIZERS_LDAP_UGP %}
+        {{ "" }}
+    {% else %}
+        {{ "<!--" }}
+    {% endif %}
+    <userGroupProvider>
+        <identifier>ldap-user-group-provider</identifier>
+        <class>org.apache.nifi.ldap.tenants.LdapUserGroupProvider</class>
+        <property name="Authentication Strategy">{{ AUTHORIZERS_LDAP_AUTH_STRAT | default("START_TLS") }}</property>
+
+        <property name="Manager DN">{{ AUTHORIZERS_LDAP_MGR_DN | default("") }}</property>
+        <property name="Manager Password">{{ AUTHORIZERS_LDAP_MGR_PWD | default("") }}</property>
+
+        <property name="TLS - Keystore">{{ AUTHORIZERS_LDAP_TLS_KS | default("") }}</property>
+        <property name="TLS - Keystore Password">{{ AUTHORIZERS_LDAP_TLS_KS_PWD | default("") }}</property>
+        <property name="TLS - Keystore Type">{{ AUTHORIZERS_LDAP_TLS_KS_TYPE | default("") }}</property>
+        <property name="TLS - Truststore">{{ AUTHORIZERS_LDAP_TLS_TS | default("") }}</property>
+        <property name="TLS - Truststore Password">{{ AUTHORIZERS_LDAP_TLS_TS_PWD | default("") }}</property>
+        <property name="TLS - Truststore Type">{{ AUTHORIZERS_LDAP_TLS_TS_TYPE | default("") }}</property>
+        <property name="TLS - Client Auth">{{ AUTHORIZERS_LDAP_TLS_CLIENT_AUTH | default("") }}</property>
+        <property name="TLS - Protocol">{{ AUTHORIZERS_LDAP_TLS_PROT | default("") }}</property>
+        <property name="TLS - Shutdown Gracefully">{{ AUTHORIZERS_LDAP_TLS_SHUT_GRACE | default("") }}</property>
+
+        <property name="Referral Strategy">{{ AUTHORIZERS_LDAP_REF_STRAT | default("FOLLOW") }}</property>
+        <property name="Connect Timeout">{{ AUTHORIZERS_LDAP_CONN_TO | default("10 secs") }}</property>
+        <property name="Read Timeout">{{ AUTHORIZERS_LDAP_READ_TO | default("10 secs") }}</property>
+
+        <property name="Url">{{ AUTHORIZERS_LDAP_URL | default("") }}</property>
+        <property name="Page Size">{{ AUTHORIZERS_LDAP_PAGE_SIZE | default("") }}</property>
+        <property name="Sync Interval">{{ AUTHORIZERS_LDAP_SYNC_INT | default("30 mins") }}</property>
+
+        <property name="User Search Base">{{ AUTHORIZERS_LDAP_USR_SEARCH_BASE | default("") }}</property>
+        <property name="User Object Class">{{ AUTHORIZERS_LDAP_USR_OBJ_CLS | default("person") }}</property>
+        <property name="User Search Scope">{{ AUTHORIZERS_LDAP_USR_SEARCH_SCOPE | default("ONE_LEVEL") }}</property>
+        <property name="User Search Filter">{{ AUTHORIZERS_LDAP_USR_SEARCH_FILT | default("") }}</property>
+        <property name="User Identity Attribute">{{ AUTHORIZERS_LDAP_USR_ID_ATT | default("") }}</property>
+        <property name="User Group Name Attribute">{{ AUTHORIZERS_LDAP_USR_GN_ATT | default("") }}</property>
+        <property name="User Group Name Attribute - Referenced Group Attribute">{{ AUTHORIZERS_LDAP_USR_GN_AT_REF | default("") }}</property>
+
+        <property name="Group Search Base">{{ AUTHORIZERS_LDAP_GRP_SEARCH_BASE | default("") }}</property>
+        <property name="Group Object Class">{{ AUTHORIZERS_LDAP_GRP_OBJ_CLS | default("group") }}</property>
+        <property name="Group Search Scope">{{ AUTHORIZERS_LDAP_GRP_SEARCH_SCOPE | default("ONE_LEVEL") }}</property>
+        <property name="Group Search Filter">{{ AUTHORIZERS_LDAP_GRP_SEARCH_FILT | default("") }}</property>
+        <property name="Group Name Attribute">{{ AUTHORIZERS_LDAP_GRP_ID_ATT | default("") }}</property>
+        <property name="Group Member Attribute">{{ AUTHORIZERS_LDAP_GRP_MEM_ATT | default("") }}</property>
+        <property name="Group Member Attribute - Referenced User Attribute">{{ AUTHORIZERS_LDAP_GRP_MEM_ATT_REF | default("") }}</property>
+    </userGroupProvider>
+    {% if AUTHORIZERS_LDAP_UGP %}
+        {{ "" }}
+    {% else %}
+        {{ "-->" }}
+    {% endif %}
+
+    {% if AUTHORIZERS_CUGP %}
+        {{ "" }}
+    {% else %}
+        {{ "<!--" }}
+    {% endif %}
+    <userGroupProvider>
+        <identifier>composite-user-group-provider</identifier>
+        <class>org.apache.nifi.authorization.CompositeUserGroupProvider</class>
+        <property name="User Group Provider 1">{{ AUTHORIZERS_UGP_CUGP_1 | default("") }}</property>
+    </userGroupProvider>
+    {% if AUTHORIZERS_CUGP %}
+        {{ "" }}
+    {% else %}
+        {{ "-->" }}
+    {% endif %}
+
+    {% if AUTHORIZERS_CCUGP %}
+        {{ "" }}
+    {% else %}
+        {{ "<!--" }}
+    {% endif %}
+    <userGroupProvider>
+        <identifier>composite-configurable-user-group-provider</identifier>
+        <class>org.apache.nifi.authorization.CompositeConfigurableUserGroupProvider</class>
+        <property name="Configurable User Group Provider">{{ AUTHORIZERS_UGP_COMP_CUGP | default("file-user-group-provider") }}</property>
+        <property name="User Group Provider 1">{{ AUTHORIZERS_COMP_UGP | default("") }}</property>
+    </userGroupProvider>
+    {% if AUTHORIZERS_CCUGP %}
+        {{ "" }}
+    {% else %}
+        {{ "-->" }}
+    {% endif %}
+
+    <accessPolicyProvider>
+        <identifier>file-access-policy-provider</identifier>
+        <class>org.apache.nifi.authorization.FileAccessPolicyProvider</class>
+        <property name="User Group Provider">{{ AUTHORIZERS_APP_FAPP_UGP | default("file-user-group-provider") }}</property>
+        <property name="Authorizations File">{{ AUTHORIZERS_APP_FAPP_AF | default("./conf/authorizations.xml") }}</property>
+        <property name="Initial Admin Identity">{{ AUTHORIZERS_APP_FAPP_IAI | default("") }}</property>
+        <property name="Legacy Authorized Users File">{{ AUTHORIZERS_APP_FAPP_LAUF | default("") }}</property>
+        <property name="Node Identity 1">{{ AUTHORIZERS_APP_FAPP_NI_1 | default("") }}</property>
+        <property name="Node Group">{{ AUTHORIZERS_APP_FAPP_NG | default("") }}</property>
+    </accessPolicyProvider>
+
+    <authorizer>
+        <identifier>managed-authorizer</identifier>
+        <class>org.apache.nifi.authorization.StandardManagedAuthorizer</class>
+        <property name="Access Policy Provider">{{ AUTHORIZERS_AUTHZ_MA_APP | default("file-access-policy-provider") }}</property>
+    </authorizer>
+
+</authorizers>
