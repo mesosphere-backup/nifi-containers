@@ -25,23 +25,36 @@ makecert(){
 
 	prdebug "PKI SAN List: ${PKI_SAN}"
 
+	cp /mnt/mesos/sandbox/nifi-key.key .
+	cp /mnt/mesos/sandbox/nifi-cert.pem .
+	cp /mnt/mesos/sandbox/caroot.pem .
 	../nifi-toolkit-current/bin/tls-toolkit.sh standalone \
-		--certificateAuthorityHostname ${PKI_HOST}:19443 \
-		--clientCertDn ${CLIENTCERTDN} \
-		--subjectAlternativeNames ${PKI_SAN} \
+		--certificateAuthorityHostname "${PKI_HOST}":19443 \
+		--clientCertDn "${CLIENTCERTDN}" \
+		--subjectAlternativeNames "${PKI_SAN}" \
 		--isOverwrite \
-		--hostnames ${HOSTNAME}
+		-o . \
+		--additionalCACertificate caroot.pem \
+		--hostnames "${HOSTNAME}"
 
-	mv ${HOSTNAME}/keystore.jks ${NF_KEYS_PATH}/keystore.jks
-	mv ${HOSTNAME}/truststore.jks ${NF_KEYS_PATH}/truststore.jks
+	mv "${HOSTNAME}"/keystore.jks "${NF_KEYS_PATH}"/keystore.jks
+	mv "${HOSTNAME}"/truststore.jks "${NF_KEYS_PATH}"/truststore.jks
 
-	export NIFI_SECURITY_KEYSTOREPASSWD=$(cat ${HOSTNAME}/nifi.properties | grep keystorePasswd | cut -d"=" -f2)
-	export NIFI_SECURITY_KEYPASSWD=$(cat ${HOSTNAME}/nifi.properties | grep keyPasswd | cut -d"=" -f2)
-	export NIFI_SECURITY_TRUSTSTOREPASSWD=$(cat ${HOSTNAME}/nifi.properties | grep truststorePasswd | cut -d"=" -f2)
-	export NIFI_SECURITY_KEYSTORETYPE=$(cat ${HOSTNAME}/nifi.properties | grep keystoreType | cut -d"=" -f2)
-	export NIFI_SECURITY_TRUSTSTORETYPE=$(cat ${HOSTNAME}/nifi.properties | grep truststoreType | cut -d"=" -f2)
-	export NIFI_SECURITY_TRUSTSTORE=${NF_KEYS_PATH}/truststore.jks
-	export NIFI_SECURITY_KEYSTORE=${NF_KEYS_PATH}/keystore.jks
+	NIFI_SECURITY_KEYSTOREPASSWD="$(grep keystorePasswd "${HOSTNAME}"/nifi.properties | cut -d"=" -f2)"
+	NIFI_SECURITY_KEYPASSWD="$(grep keyPasswd "${HOSTNAME}"/nifi.properties | cut -d"=" -f2)"
+	NIFI_SECURITY_TRUSTSTOREPASSWD="$(grep truststorePasswd "${HOSTNAME}"/nifi.properties | cut -d"=" -f2)"
+	NIFI_SECURITY_KEYSTORETYPE="$(grep keystoreType "${HOSTNAME}"/nifi.properties | cut -d"=" -f2)"
+	NIFI_SECURITY_TRUSTSTORETYPE="$(grep truststoreType "${HOSTNAME}"/nifi.properties | cut -d"=" -f2)"
+	NIFI_SECURITY_TRUSTSTORE="${NF_KEYS_PATH}/truststore.jks"
+	NIFI_SECURITY_KEYSTORE="${NF_KEYS_PATH}/keystore.jks"
+
+	export NIFI_SECURITY_KEYSTOREPASSWD
+	export NIFI_SECURITY_KEYPASSWD
+	export NIFI_SECURITY_TRUSTSTOREPASSWD
+	export NIFI_SECURITY_KEYSTORETYPE
+	export NIFI_SECURITY_TRUSTSTORETYPE
+	export NIFI_SECURITY_TRUSTSTORE
+	export NIFI_SECURITY_KEYSTORE
 
 	# Make consumable client certificates
 	openssl pkcs12 -in "${CLIENTCERTDN/,/_}.p12" -out newfile.crt.pem -clcerts -nokeys -password file:"${CLIENTCERTDN/,/_}.password"
@@ -59,46 +72,58 @@ makeconfig(){
 	# TODO: FixMe - make HTTP and HTTPS versions
 	NIFI_WEB_PROXY_HOST="${HOSTNAME}:${NIFI_WEB_HTTPS_PORT},${NIFI_WEB_PROXY_HOST}"
 
+	# shellcheck disable=SC2129
+	LOGINIDPROV_LDAP_TLS_KS=${NIFI_HOME}/conf/ldapks.jks
+  # LOGINIDPROV_LDAP_TLS_KS_PWD=${NIFI_SECURITY_KEYSTOREPASSWD}
+	LOGINIDPROV_LDAP_TLS_KS_TYPE=${NIFI_SECURITY_KEYSTORETYPE}
+	LOGINIDPROV_LDAP_TLS_TS=${NIFI_HOME}/conf/ldapts.jks
+	# LOGINIDPROV_LDAP_TLS_TS_PWD=${NIFI_SECURITY_TRUSTSTOREPASSWD}
+	LOGINIDPROV_LDAP_TLS_TS_TYPE=${NIFI_SECURITY_TRUSTSTORETYPE}
+
+	export LOGINIDPROV_LDAP_TLS_KS
+  export LOGINIDPROV_LDAP_TLS_KS_TYPE
+  export LOGINIDPROV_LDAP_TLS_TS
+  export LOGINIDPROV_LDAP_TLS_TS_TYPE
+
 	# Build the nifi.properties file, remove it if present
 	if [[ -f ${NIFI_HOME}/conf/nifi.properties ]];then
-		rm -f ${NIFI_HOME}/conf/nifi.properties
+		rm -f "${NIFI_HOME}"/conf/nifi.properties
 	fi
 
-	${scripts_dir}/j2 --undefined ${NIFI_HOME}/conf/bootstrap.conf.j2 -o ${NIFI_HOME}/conf/bootstrap.conf
-	${scripts_dir}/j2 --undefined ${NIFI_HOME}/conf/nifi.properties.j2 -o ${NIFI_HOME}/conf/nifi.properties
-	${scripts_dir}/j2 --undefined ${NIFI_HOME}/conf/login-identity-providers.xml.j2 -o ${NIFI_HOME}/conf/login-identity-providers.xml
-	${scripts_dir}/j2 --undefined ${NIFI_HOME}/conf/authorizers.xml.j2 -o ${NIFI_HOME}/conf/authorizers.xml
-	${scripts_dir}/j2 --undefined ${NIFI_HOME}/conf/zookeeper.properties.j2 -o ${NIFI_HOME}/conf/zookeeper.properties
-
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/bootstrap.conf.j2 -o "${NIFI_HOME}"/conf/bootstrap.conf
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/nifi.properties.j2 -o "${NIFI_HOME}"/conf/nifi.properties
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/login-identity-providers.xml.j2 -o "${NIFI_HOME}"/conf/login-identity-providers.xml
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/authorizers.xml.j2 -o "${NIFI_HOME}"/conf/authorizers.xml
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/zookeeper.properties.j2 -o "${NIFI_HOME}"/conf/zookeeper.properties
 }
 
 showconfig(){
 	# print config information if the DEBUG var is set to True
 	prdebug "NiFi properties:"
-	prdebug "$(cat ${NIFI_HOME}/conf/nifi.properties)"
+	prdebug "$(cat "${NIFI_HOME}"/conf/nifi.properties)"
 	prdebug " "
 		prdebug "Bootstrap Config"
-	prdebug "$(cat ${NIFI_HOME}/conf/bootstrap.conf)"
+	prdebug "$(cat "${NIFI_HOME}"/conf/bootstrap.conf)"
 	prdebug " "
 		prdebug "Login ID Providers:"
-	prdebug "$(cat ${NIFI_HOME}/conf/login-identity-providers.xml)"
+	prdebug "$(cat "${NIFI_HOME}"/conf/login-identity-providers.xml)"
 	prdebug " "
 		prdebug "Authorizers:"
-	prdebug "$(cat ${NIFI_HOME}/conf/authorizers.xml)"
+	prdebug "$(cat "${NIFI_HOME}"/conf/authorizers.xml)"
 	prdebug " "
 		prdebug "Zookeeper properties:"
-	prdebug "$(cat ${NIFI_HOME}/conf/zookeeper.properties)"
+	prdebug "$(cat "${NIFI_HOME}"/conf/zookeeper.properties)"
 	prdebug " "
 }
+
+makecert
+makeconfig
+showconfig
 
 #unset bash debug
 if [[ ${DEBUG} == "True" ]]; then
 	set +x
 fi
-
-makecert
-makeconfig
-showconfig
 
 # Run NiFi
 tail -F "${NIFI_HOME}/logs/nifi-app.log" &
@@ -109,4 +134,3 @@ trap "echo Received trapped signal, beginning shutdown...;" KILL TERM HUP INT EX
 
 echo NiFi running with PID ${nifi_pid}.
 wait ${nifi_pid}
-

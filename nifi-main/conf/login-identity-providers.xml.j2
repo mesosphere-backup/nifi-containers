@@ -25,7 +25,7 @@
         <property name="Manager Password">{{ LOGINIDPROV_LDAP_MGR_PWD|default("") }}</property>
 
         <property name="TLS - Keystore">{{ LOGINIDPROV_LDAP_TLS_KS|default("") }}</property>
-        <property name="TLS - Keystore Password">{{ LOGINIDPROV_LDAP_TLS_KS_PWD|default("") }}</property>
+        <property name="TLS - Keystore Password">{{ LOGINIDPROV_LDAP_TLS_KS_PWD|default("${LOGINIDPROV_LDAP_TLS_KS_PWD}") }}</property>
         <property name="TLS - Keystore Type">{{ LOGINIDPROV_LDAP_TLS_KS_TYPE|default("") }}</property>
         <property name="TLS - Truststore">{{ LOGINIDPROV_LDAP_TLS_TS|default("") }}</property>
         <property name="TLS - Truststore Password">{{ LOGINIDPROV_LDAP_TLS_TS_PWD|default("") }}</property>

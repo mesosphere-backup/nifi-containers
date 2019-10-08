@@ -19,8 +19,13 @@ ENV NIFI_HOME ${NIFI_BASE_DIR}/nifi-current
 ENV NIFI_LOG_DIR=${NIFI_HOME}/logs
 ENV NIFI_PID_DIR=${NIFI_HOME}/run
 
-ADD conf/ ${NIFI_HOME}/conf/
-ADD sh/ ${NIFI_BASE_DIR}/scripts/
+RUN echo ${DOCKERTAG} > ${NIFI_BASE_DIR}/dockertag
+
+ADD --chown=nifi:nifi conf/ ${NIFI_HOME}/conf/
+ADD --chown=nifi:nifi sh/ ${NIFI_BASE_DIR}/scripts/
+
+#RUN chown -R nifi:nifi ${NIFI_HOME}/conf
+#RUN chown -R nifi:nifi ${NIFI_BASE_DIR}/scripts
 
 # Clear nifi-env.sh in favour of configuring all environment variables in the Dockerfile
 RUN echo "#!/bin/sh\n" > $NIFI_HOME/bin/nifi-env.sh

@@ -17,7 +17,8 @@ docker build \
 	--build-arg UID="$DOCKER_UID" \
 	--build-arg GID="$DOCKER_GID" \
 	--build-arg NIFI_VERSION="${NIFI_VERSION}" \
-	-t "${DOCKERTAG}" \
+	--build-arg DOCKERTAG="${DOCKERTAG}" \
+		-t "${DOCKERTAG}" \
 	. \
 	>>${BUILDRUN} 2>&1 &
 printhdr "Building Image "; progress "$!"
