@@ -6,6 +6,7 @@
 
 # Load script variables
 scripts_dir='/opt/nifi/scripts'
+conf_dir="${BOOTSTRAP_CONF_DIR}"
 
 # set bash debug
 if [[ ${DEBUG} == "True" ]]; then
@@ -77,33 +78,33 @@ makeconfig(){
 	NIFI_WEB_PROXY_HOST="${HOSTNAME}:${NIFI_WEB_HTTPS_PORT},${NIFI_WEB_PROXY_HOST}"
 
 	# Build the nifi.properties file, remove it if present
-	if [[ -f ${NIFI_HOME}/conf/nifi.properties ]];then
-		rm -f "${NIFI_HOME}"/conf/nifi.properties
+	if [[ -f ${conf_dir}/nifi.properties ]];then
+		rm -f ${conf_dir}/nifi.properties
 	fi
 
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/bootstrap.conf.j2 -o "${NIFI_HOME}"/conf/bootstrap.conf
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/nifi.properties.j2 -o "${NIFI_HOME}"/conf/nifi.properties
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/login-identity-providers.xml.j2 -o "${NIFI_HOME}"/conf/login-identity-providers.xml
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/authorizers.xml.j2 -o "${NIFI_HOME}"/conf/authorizers.xml
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/zookeeper.properties.j2 -o "${NIFI_HOME}"/conf/zookeeper.properties
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/bootstrap.conf.j2 -o ${conf_dir}/bootstrap.conf
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/nifi.properties.j2 -o ${conf_dir}/nifi.properties
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/login-identity-providers.xml.j2 -o ${conf_dir}/login-identity-providers.xml
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/authorizers.xml.j2 -o ${conf_dir}/authorizers.xml
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/zookeeper.properties.j2 -o ${conf_dir}/zookeeper.properties
 }
 
 showconfig(){
 	# print config information if the DEBUG var is set to True
 	prdebug "NiFi properties:"
-	prdebug "$(cat "${NIFI_HOME}"/conf/nifi.properties)"
+	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/nifi.properties)"
 	prdebug " "
 		prdebug "Bootstrap Config"
-	prdebug "$(cat "${NIFI_HOME}"/conf/bootstrap.conf)"
+	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/bootstrap.conf)"
 	prdebug " "
 		prdebug "Login ID Providers:"
-	prdebug "$(cat "${NIFI_HOME}"/conf/login-identity-providers.xml)"
+	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/login-identity-providers.xml)"
 	prdebug " "
 		prdebug "Authorizers:"
-	prdebug "$(cat "${NIFI_HOME}"/conf/authorizers.xml)"
+	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/conf/authorizers.xml)"
 	prdebug " "
 		prdebug "Zookeeper properties:"
-	prdebug "$(cat "${NIFI_HOME}"/conf/zookeeper.properties)"
+	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/zookeeper.properties)"
 	prdebug " "
 }
 
