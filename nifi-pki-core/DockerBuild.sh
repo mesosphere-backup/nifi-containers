@@ -3,8 +3,9 @@
 # Licensed under the Apache 2.0 License
 # Martijn Dekkers <mdekkers@d2iq.com>
 
-source functions.sh
-source settings.sh
+source $(dirname $0)/simple_curses.sh
+source $(dirname $0)/functions.sh
+source $(dirname $0)/settings.sh
 
 docker build \
 	--no-cache \

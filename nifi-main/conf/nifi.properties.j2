@@ -149,18 +149,18 @@ nifi.security.user.knox.cookieName={{ NIFI_SECURITY_USER_KNOX_COOKIENAME|default
 nifi.security.user.knox.audiences={{ NIFI_SECURITY_USER_KNOX_AUDIENCES }}
 
 {% if NIFI_SEC_ID_MAP %}
-    nifi.security.identity.mapping.pattern.dn={{ NIFI_SECURITY_IDENTITY_MAPPING_PATTERN_DN|default("^CN=(.*?), OU=(.*?), O=(.*?), L=(.*?), ST=(.*?), C=(.*?)$") }}
-    nifi.security.identity.mapping.value.dn={{ NIFI_SECURITY_IDENTITY_MAPPING_VALUE_DN|default("$1@$2") }}
-    nifi.security.identity.mapping.transform.dn={{ NIFI_SECURITY_IDENTITY_MAPPING_TRANSFORM_DN|default("NONE") }}
-    nifi.security.identity.mapping.pattern.kerb={{ NIFI_SECURITY_IDENTITY_MAPPING_PATTERN_KERB|default("^(.*?)/instance@(.*?)$") }}
-    nifi.security.identity.mapping.value.kerb={{ NIFI_SECURITY_IDENTITY_MAPPING_VALUE_KERB|default("$1@$2") }}
-    nifi.security.identity.mapping.transform.kerb={{ NIFI_SECURITY_IDENTITY_MAPPING_TRANSFORM_KERB|default("UPPER") }}
+nifi.security.identity.mapping.pattern.dn={{ NIFI_SECURITY_IDENTITY_MAPPING_PATTERN_DN|default("^CN=(.*?), OU=(.*?), O=(.*?), L=(.*?), ST=(.*?), C=(.*?)$") }}
+nifi.security.identity.mapping.value.dn={{ NIFI_SECURITY_IDENTITY_MAPPING_VALUE_DN|default("$1@$2") }}
+nifi.security.identity.mapping.transform.dn={{ NIFI_SECURITY_IDENTITY_MAPPING_TRANSFORM_DN|default("NONE") }}
+nifi.security.identity.mapping.pattern.kerb={{ NIFI_SECURITY_IDENTITY_MAPPING_PATTERN_KERB|default("^(.*?)/instance@(.*?)$") }}
+nifi.security.identity.mapping.value.kerb={{ NIFI_SECURITY_IDENTITY_MAPPING_VALUE_KERB|default("$1@$2") }}
+nifi.security.identity.mapping.transform.kerb={{ NIFI_SECURITY_IDENTITY_MAPPING_TRANSFORM_KERB|default("UPPER") }}
 {%  endif %}
 
 {% if NIFI_SEC_GRP_MAP %}
-    nifi.security.group.mapping.pattern.anygroup={{ NIFI_SECURITY_GROUP_MAPPING_PATTERN_ANYGROUP|default("^(.*)$") }}
-    nifi.security.group.mapping.value.anygroup={{ NIFI_SECURITY_GROUP_MAPPING_VALUE_ANYGROUP|default("$1") }}
-    nifi.security.group.mapping.transform.anygroup={{ NIFI_SECURITY_GROUP_MAPPING_TRANSFORM_ANYGROUP|default("LOWER") }}
+nifi.security.group.mapping.pattern.anygroup={{ NIFI_SECURITY_GROUP_MAPPING_PATTERN_ANYGROUP|default("^(.*)$") }}
+nifi.security.group.mapping.value.anygroup={{ NIFI_SECURITY_GROUP_MAPPING_VALUE_ANYGROUP|default("$1") }}
+nifi.security.group.mapping.transform.anygroup={{ NIFI_SECURITY_GROUP_MAPPING_TRANSFORM_ANYGROUP|default("LOWER") }}
 {% endif %}
 
 nifi.cluster.protocol.heartbeat.interval={{ NIFI_CLUSTER_PROTOCOL_HEARTBEAT_INTERVAL|default("5 sec") }}

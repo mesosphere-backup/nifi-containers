@@ -1,5 +1,0 @@
-pyinstaller
-click
-datetime
-staticx
-patchelf-wrapper
