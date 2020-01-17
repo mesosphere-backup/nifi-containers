@@ -6,7 +6,7 @@
 
 # Load script variables
 scripts_dir='/opt/nifi/scripts'
-conf_dir="${BOOTSTRAP_CONF_DIR}"
+conf_dir="/mnt/mesos/sandbox/conf"
 
 # set bash debug
 if [[ ${DEBUG} == "True" ]]; then
@@ -18,6 +18,12 @@ prdebug(){
 		echo "[DEBUG] [$(date +%F\ %T)] $1 $2"
 	fi
 }
+
+# Work around NiFi bug 4685 to work with a different location for conf directory.
+mv /opt/nifi/nifi-current/conf /opt/nifi/nifi-current/conf.moved
+ln -s ${conf_dir} /opt/nifi/nifi-current/conf
+chown -R nifi: /opt/nifi/nifi-current/conf
+chown -R nifi: ${conf_dir}
 
 makecert(){
 
@@ -82,29 +88,33 @@ makeconfig(){
 		rm -f ${conf_dir}/nifi.properties
 	fi
 
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/bootstrap.conf.j2 -o ${conf_dir}/bootstrap.conf
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/nifi.properties.j2 -o ${conf_dir}/nifi.properties
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/login-identity-providers.xml.j2 -o ${conf_dir}/login-identity-providers.xml
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/authorizers.xml.j2 -o ${conf_dir}/authorizers.xml
-	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf/zookeeper.properties.j2 -o ${conf_dir}/zookeeper.properties
+  # Build the other config files from envvars
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf.moved/bootstrap.conf.j2 -o ${conf_dir}/bootstrap.conf
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf.moved/nifi.properties.j2 -o ${conf_dir}/nifi.properties
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf.moved/login-identity-providers.xml.j2 -o ${conf_dir}/login-identity-providers.xml
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf.moved/authorizers.xml.j2 -o ${conf_dir}/authorizers.xml
+	${scripts_dir}/j2 --undefined "${NIFI_HOME}"/conf.moved/zookeeper.properties.j2 -o ${conf_dir}/zookeeper.properties
+  cp "${NIFI_HOME}"/conf.moved/bootstrap-notification-services.xml ${conf_dir}/bootstrap-notification-services.xml
+  cp "${NIFI_HOME}"/conf.moved/logback.xml ${conf_dir}/logback.xml
+  cp "${NIFI_HOME}"/conf.moved/state-management.xml ${conf_dir}/state-management.xml
 }
 
 showconfig(){
 	# print config information if the DEBUG var is set to True
 	prdebug "NiFi properties:"
-	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/nifi.properties)"
+	prdebug "$(cat ${conf_dir}/nifi.properties)"
 	prdebug " "
 		prdebug "Bootstrap Config"
-	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/bootstrap.conf)"
+	prdebug "$(cat ${conf_dir}/bootstrap.conf)"
 	prdebug " "
 		prdebug "Login ID Providers:"
-	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/login-identity-providers.xml)"
+	prdebug "$(cat ${conf_dir}/login-identity-providers.xml)"
 	prdebug " "
 		prdebug "Authorizers:"
-	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/conf/authorizers.xml)"
+	prdebug "$(cat ${conf_dir}/authorizers.xml)"
 	prdebug " "
 		prdebug "Zookeeper properties:"
-	prdebug "$(cat /mnt/mesos/sandbox/${conf_dir}/zookeeper.properties)"
+	prdebug "$(cat ${conf_dir}/zookeeper.properties)"
 	prdebug " "
 }
 
@@ -116,6 +126,7 @@ showconfig
 if [[ ${DEBUG} == "True" ]]; then
 	set +x
 fi
+
 
 # Run NiFi
 tail -F "${NIFI_HOME}/logs/nifi-app.log" &

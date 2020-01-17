@@ -42,7 +42,7 @@ java.arg.4=-Djava.net.preferIPv4Stack=true
 
 # allowRestrictedHeaders is required for Cluster/Node communications to work properly
 java.arg.5=-Dsun.net.http.allowRestrictedHeaders=true
-java.arg.6=protocol.handler.pkgs=sun.net.www.protocol
+java.arg.6=-Djava.protocol.handler.pkgs=sun.net.www.protocol
 
 # The G1GC is still considered experimental but has proven to be very advantageous in providing great
 # performance without significant "stop-the-world" delays.
@@ -66,7 +66,7 @@ java.arg.16=-Djavax.security.auth.useSubjectCredsOnly=true
 ###
 
 # XML File that contains the definitions of the notification services
-notification.services.file={{ BOOTSTRAP_NOTIFICATION_SERVICES_FILE|default("./conf/bootstrap-notification-services.xml") }}
+notification.services.file={{ BOOTSTRAP_NOTIFICATION_SERVICES_FILE|default( "./conf/bootstrap-notification-services.xml") }}
 
 # In the case that we are unable to send a notification for an event, how many times should we retry?
 notification.max.attempts={{ BOOTSTRAP_NOTIFICATION_MAX_ATTEMPTS|default("5") }}
